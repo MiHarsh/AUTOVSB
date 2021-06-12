@@ -26,7 +26,11 @@ async function start(){
     getSlotPIN = 0
     while(!getSlotPIN){
         getSlotPIN = await checkSlot({zipcode,checkdate,age});
-        await testingPage.waitForTimeout(40000);
+        
+        if(!getSlotPIN){
+            await testingPage.waitForTimeout(40000);
+        }
+        
     }
 
     let newUrl = "https://selfregistration.cowin.gov.in/";
