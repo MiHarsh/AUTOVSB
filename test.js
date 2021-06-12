@@ -16,12 +16,22 @@ async function boot(){
 
 async function start(){
     // Test feature
-    let newUrl = "https://selfregistration.cowin.gov.in/";
 
     const age = 18 ;
+    let zipcode=["210001"]//list of pincodes
+    
+    let curr_date = new Date();//current date
+    let checkdate = [curr_date.getDate(), curr_date.getMonth()+1, curr_date.getFullYear()].join('-')//date in required format
 
-    let pincode = '229408';
+    getSlotPIN = 0
+    while(!getSlotPIN){
+        getSlotPIN = await checkSlot({zipcode,checkdate,age});
+        await testingPage.waitForTimeout(40000);
+    }
 
+    let newUrl = "https://selfregistration.cowin.gov.in/";
+
+    let pincode = String(getSlotPIN) ;
     await testingPage.goto(newUrl);
     var flag = 1;
 
@@ -97,7 +107,7 @@ async function start(){
             return 1;});
 
         if(flag===1){
-            await testingPage.waitForTimeout(10000);
+            await testingPage.waitForTimeout(50000);
         }
     }
 
@@ -145,5 +155,55 @@ async function boot_start(){
     await start();
     };
 
+
+async function checkSlot({zipcode,checkdate,age}){
+    let final_pincode = 0;// default value of pincode
+    let total_dose = 0;// default value of total dose at a pincode
+
+    for (var k = 0; k < zipcode.length; k++)//for loop to iterate through list of pincode 
+    {   
+        let pin = zipcode[k];
+        
+        response = await testingPage.evaluate(({pin,checkdate})=>{
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode="+pin+"&date="+ checkdate, false);
+            xhttp.send();
+            return xhttp.response;
+        },{pin,checkdate});
+
+        var data = JSON.parse(response);
+   
+        var centre_avail=data.centers.length;//number of centers available at a pincode
+        let i=0;
+        let dose_availble=0;//dose available at a pincode
+        
+        while(i<centre_avail)//if center available at the pincode
+        {
+            if(data.centers[i].fee_type==="Free")//if vaccine is free
+            {
+                let j=0; 
+                while(j<data.centers[i].sessions.length) //iteration through all sessions 
+                {
+                    if(data.centers[i].sessions[j].min_age_limit===age && data.centers[i].sessions[j].available_capacity_dose1!==0)//checking age limit and availbility
+                        {
+                            dose_availble=dose_availble+data.centers[i].sessions[j].available_capacity_dose1;
+                        }
+                    j++;
+                }
+            }
+            i++;
+        }
+        //if total dose availabel at any pincode for week is greater than the total dose or not
+        if(total_dose<dose_availble)
+        {
+            total_dose=dose_availble;
+            final_pincode=pin;
+        }
+
+    }
+    return final_pincode;
+}
+
 boot_start();
+
 
