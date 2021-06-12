@@ -1,7 +1,11 @@
+// ##################### LOAD REQUIRED STUFFS #################
 const puppeteer = require('puppeteer');
+var creds       = require('./credentials.json');
 let testingPage = null;
+// ############################ LOADED #################
 
 
+// ##################### FUNCTION TO LAUNCH THE BROWSER ################
 async function boot(){
     browser = await puppeteer.launch({
           headless: false, // extension are allowed only in head-full mode
@@ -11,41 +15,78 @@ async function boot(){
           ],
           pipe: true
         });
+    console.log("Welcome @user :) , now sit back and go on resume your work \n");
     testingPage = await browser.newPage(); };
+
+// #######################################################################
     
 
+// ######################### START AUTOMATION #########################
 async function start(){
-    // Test feature
 
-    const age = 18 ;
-    let zipcode=["210001"]//list of pincodes
-    
-    let curr_date = new Date();//current date
+
+    const age = creds['age'] ;
+    let mobile_number = creds['mobile_number'];
+    let zipcode= creds['zipcodes']   //list of pincodes
+    let preferred_slot = Number(creds['preferred_slot']);
+
+    let curr_date = new Date(); //current date
     let checkdate = [curr_date.getDate(), curr_date.getMonth()+1, curr_date.getFullYear()].join('-')//date in required format
+
+    // ###################################################
+    /* PIN HAVING MAXIMUM SLOT
+        IF NONE HAVE SLOTS, 0 IS RETURNED
+        ONCE A SESSION WITH SLOTS IS LOCATED,
+        IT GRABS THE PIN AND STORES IN getSlotPIN
+    */
 
     getSlotPIN = 0
     while(!getSlotPIN){
         getSlotPIN = await checkSlot({zipcode,checkdate,age});
-        
         if(!getSlotPIN){
             await testingPage.waitForTimeout(40000);
         }
-        
     }
 
-    let newUrl = "https://selfregistration.cowin.gov.in/";
-
     let pincode = String(getSlotPIN) ;
+    // ###################################################
+
+    let newUrl = "https://selfregistration.cowin.gov.in/";
     await testingPage.goto(newUrl);
-    var flag = 1;
-
-    await testingPage.waitForTimeout(30000);
-
-    // GOTO dashboard
-    await testingPage.goto("https://selfregistration.cowin.gov.in/dashboard")
     await testingPage.waitForTimeout(5000);
 
-    // Select element to schedule booking 
+    // ################## SITE IS LOADED ######################
+
+    
+    // ###################### ENTER THE MOBILE NUMBER AND CLICK NEXT #################################
+    await testingPage.waitForSelector('input#mat-input-0'); // <-- wait until it exists
+    await testingPage.focus("input#mat-input-0");
+    await testingPage.keyboard.type(String(mobile_number), {delay: 300});
+
+    await testingPage.evaluate(()=>{
+        document.querySelector("[class='covid-button-desktop ion-text-center']").children[0].click();
+    });
+
+    // ##########################################################################################
+    
+    await testingPage.waitForTimeout(5000);
+    var otp = await retrieveOTP(mobile_number);
+
+    // ###################### ENTER THE OTP VERIFICATION CODE AND CLICK NEXT #####################
+
+    await testingPage.waitForSelector('input#mat-input-1'); // <-- wait until it exists
+    await testingPage.focus("input#mat-input-1");
+    await testingPage.keyboard.type(otp, {delay: 1000});
+    await testingPage.evaluate(()=>{
+        document.querySelector("[class='covid-button-desktop ion-text-center']").children[0].click();
+    });
+
+    // ##########################################################################################
+
+    await testingPage.waitForTimeout(5000);
+
+    // ##########################################################################################
+    /* For now, this is only concerned for booking of first dose, will implement further later*/
 
     await testingPage.evaluate(() => {
 
@@ -74,14 +115,22 @@ async function start(){
 
     });
 
-    // Now Enter the Pincode Page ------>
+    // ####################################################################################
 
-    await testingPage.waitForTimeout(5000);
-    await testingPage.waitForSelector('input#mat-input-0'); // <-- wait until it exists
-    await testingPage.focus("input#mat-input-0");
+    await testingPage.waitForTimeout(10000);
 
+    // ###################### ENTER THE PIN CODE  #################################
+    await testingPage.waitForSelector('input#mat-input-2'); // <-- wait until it exists
+    await testingPage.focus("input#mat-input-2");
     await testingPage.keyboard.type(pincode, {delay: 1000});
+    
+    // ####################################################################################
 
+    // ###################### SELECT FREE AND CATEGORY OPTIONS  #################################
+    /* I have implemented in loop because, may be due to some network issues, if page is not loaded full,
+    it should give another try */
+
+    var flag = 1;
     while(flag){
 
         await testingPage.evaluate(({age})=>{
@@ -115,49 +164,48 @@ async function start(){
         }
     }
 
+    // ####################################################################################
 
-    // Now we have time slot lists;
+    // ###################### CLICK ON THE AVAILABLE SLOT LIST  #################################
+    /* Many slots may be available, but as we are monitoring from start, 
+    we can safely go with just the very first slot instead of looping on and on. */
     await testingPage.evaluate(()=>{
         let avail_vac = document.querySelector("a[href='/appointment'][class='accessibility-plugin-ac ng-star-inserted']");
-        
         avail_vac.click(); 
     });
 
- 
-
-    
+    // ####################################################################################
     await testingPage.waitForTimeout(5000);
 
+    // ###################### SELECT PREFERRED SLOT TIMING  #################################    
     await testingPage.evaluate(()=>{
         let slots = document.querySelectorAll("[class='time-slot accessibility-plugin-ac ng-star-inserted md button button-solid ion-activatable ion-focusable hydrated']");
-        
-        slots[0].click(); // time 10-12 am
+        slots[preferred_slot].click();
     });
 
+    // ####################################################################################
+
+    // ###################### CONFIRM BOOKING  #################################  
     await testingPage.evaluate(()=>{
         let btn = document.querySelectorAll("[class='covid-button-desktop ion-text-end book-btn button-container__right']");
-       
-        btn[0].children[0].click() ; // time 10-12 am
+        btn[0].children[0].click() ; 
     });
 
-  
+    // ####################################################################################
     await testingPage.waitForTimeout(6000);
 
+    // ###################################### DOWNLOAD  #################################  
     await testingPage.evaluate(()=>{
         let btn = document.querySelector("[class='print-icon accessibility-plugin-ac']");
         btn.click();
     });
+    // ####################################################################################
 
-    await testingPage.waitForTimeout(6000);
-
+    await testingPage.waitForTimeout(10000);
     await testingPage.close();
-    
     }
 
-async function boot_start(){
-    await boot();
-    await start();
-    };
+// ########################################################################################
 
 
 async function checkSlot({zipcode,checkdate,age}){
@@ -208,6 +256,54 @@ async function checkSlot({zipcode,checkdate,age}){
     return final_pincode;
 }
 
+
+async function fetchFromFirebase(mobile_number){
+    response = await testingPage.evaluate(({mobile_number})=>{
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "https://sms-receiver-26bdd-default-rtdb.firebaseio.com/otps/" + mobile_number + ".json", false);
+        xhttp.send();
+        return xhttp.response;
+    },{mobile_number});
+    return JSON.parse(response) ;
+}
+
+void async function resendOTP(){
+    await testingPage.evaluate(()=>{
+        document.querySelector("[class='ion-text-center']").children[0].children[1].click();
+    })
+    await testingPage.waitForTimeout(3000);
+}
+
+async function retrieveOTP(mobile_number){
+    let flag = 0;
+    let tn = Date.now();
+
+    let response = await fetchFromFirebase(mobile_number);
+
+    let tf = response['ts'];
+    let otp = response['otp'];
+
+    while(!flag){
+
+        if( Date.now() - tf < (3*60*1000 - 10*1000) ){
+            flag = 1;
+            return otp;
+        }
+        else {
+            if(Date.now() - tn > 4*60*1000){
+                await resendOTP();
+                tn = Date.now();
+            }
+            response = await fetchFromFirebase(mobile_number);
+            tf = response['ts'];
+            otp = response['otp'];
+        }
+    }
+}
+
+async function boot_start(){
+    await boot();
+    await start();
+    };
+
 boot_start();
-
-
