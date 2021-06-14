@@ -9,7 +9,7 @@ let testingPage = null;
 // ##################### FUNCTION TO LAUNCH THE BROWSER ################
 async function boot(){
     browser = await puppeteer.launch({
-          headless: !creds["functionality_visibility"], // extension are allowed only in head-full mode
+          headless: !creds["functionality_visibility"], 
           args: [
              `--no-sandbox`,
              `--allow-running-insecure-content`
