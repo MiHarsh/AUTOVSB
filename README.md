@@ -1,5 +1,6 @@
 # AUTOVSB
-AUTOVSB - AUTO Vaccine Slot Booker
+## AUTOVSB - AUTO Vaccine Slot Booker </br>
+A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using cowin-public-v2 API for India.
 
 ===>
 
