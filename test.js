@@ -1,6 +1,7 @@
 // ##################### LOAD REQUIRED STUFFS #################
 const puppeteer = require('puppeteer');
 var creds       = require('./credentials.json');
+var player      = require('play-sound')(opts = {})
 let testingPage = null;
 // ############################ LOADED #################
 
@@ -8,7 +9,7 @@ let testingPage = null;
 // ##################### FUNCTION TO LAUNCH THE BROWSER ################
 async function boot(){
     browser = await puppeteer.launch({
-          headless: false, // extension are allowed only in head-full mode
+          headless: creds["functionality_visibility"], // extension are allowed only in head-full mode
           args: [
              `--no-sandbox`,
              `--allow-running-insecure-content`
@@ -27,6 +28,7 @@ async function start(){
 
     const age = creds['age'] ;
     let mobile_number = creds['mobile_number'];
+    let hash_number = creds['hash_number'];
     let zipcode= creds['zipcodes']   //list of pincodes
     let preferred_slot = Number(creds['preferred_slot']);
 
@@ -48,7 +50,12 @@ async function start(){
         }
     }
 
+    player.play('notifyme.wav', function(err){
+        if (err) throw err
+    });
+    
     let pincode = String(getSlotPIN) ;
+    console.log(pincode); // if user wants to book himself...
     // ###################################################
 
     let newUrl = "https://selfregistration.cowin.gov.in/";
@@ -61,7 +68,7 @@ async function start(){
     // ###################### ENTER THE MOBILE NUMBER AND CLICK NEXT #################################
     await testingPage.waitForSelector('input#mat-input-0'); // <-- wait until it exists
     await testingPage.focus("input#mat-input-0");
-    await testingPage.keyboard.type(String(mobile_number), {delay: 300});
+    await testingPage.keyboard.type(String(mobile_number), {delay: 800});
 
     await testingPage.evaluate(()=>{
         document.querySelector("[class='covid-button-desktop ion-text-center']").children[0].click();
@@ -70,7 +77,9 @@ async function start(){
     // ##########################################################################################
     
     await testingPage.waitForTimeout(5000);
-    var otp = await retrieveOTP(mobile_number);
+    
+    var otp = await retrieveOTP(mobile_number,hash_number);
+
 
     // ###################### ENTER THE OTP VERIFICATION CODE AND CLICK NEXT #####################
 
@@ -88,13 +97,13 @@ async function start(){
     // ##########################################################################################
     /* For now, this is only concerned for booking of first dose, will implement further later*/
 
-    await testingPage.evaluate(() => {
+    let sch = await testingPage.evaluate(() => {
 
         let elements = document.getElementsByClassName("m-lablename");
         const len = elements.length;
         var i=0;
 
-        while(i<(len-1)){
+        while(i<len){
             if(elements[i].innerText === "Schedule"){
                 break;
             }
@@ -106,14 +115,24 @@ async function start(){
             }
         };
 
-        if(elements[i].innerText === "Schedule"){
-            elements[i].click();
-        }
-        else{
-            alert("Sorry Nothing to Schedule !!");
+        if(i>=len){
+            return 0; 
         }
 
-    });
+        if(elements[i].innerText === "Schedule"){
+            elements[i].click();
+            return 1;
+            
+        }
+    }); 
+
+
+    if( sch === 0 )
+    {
+        console.log("Nothing to Schedule for Dose 1");
+        await browser.close();
+        
+    }
 
     // ####################################################################################
 
@@ -257,14 +276,16 @@ async function checkSlot({zipcode,checkdate,age}){
 }
 
 
-async function fetchFromFirebase(mobile_number){
-    response = await testingPage.evaluate(({mobile_number})=>{
+async function fetchFromFirebase(mobile_number,hash_number){
+
+    response = await testingPage.evaluate(({mobile_number,hash_number})=>{
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "https://sms-receiver-26bdd-default-rtdb.firebaseio.com/otps/" + mobile_number + ".json", false);
+        xhttp.open("GET", "https://miharsh.pythonanywhere.com/" + String(mobile_number) + "/" + String(hash_number), false);
         xhttp.send();
         return xhttp.response;
-    },{mobile_number});
-    return JSON.parse(response) ;
+    },{mobile_number,hash_number});
+
+    return JSON.parse(response);
 }
 
 void async function resendOTP(){
@@ -274,27 +295,28 @@ void async function resendOTP(){
     await testingPage.waitForTimeout(3000);
 }
 
-async function retrieveOTP(mobile_number){
+async function retrieveOTP(mobile_number,hash_number){
     let flag = 0;
     let tn = Date.now();
-
-    let response = await fetchFromFirebase(mobile_number);
-
+    
+    let response = await fetchFromFirebase(mobile_number,hash_number);
+    
     let tf = response['ts'];
     let otp = response['otp'];
 
+
     while(!flag){
 
-        if( Date.now() - tf < (3*60*1000 - 10*1000) ){
+        if( (Date.now() - tf) < 170000 ){
             flag = 1;
             return otp;
         }
         else {
-            if(Date.now() - tn > 4*60*1000){
+            if(Date.now() - tn > 210000){
                 await resendOTP();
                 tn = Date.now();
             }
-            response = await fetchFromFirebase(mobile_number);
+            response = await fetchFromFirebase(mobile_number,hash_number);
             tf = response['ts'];
             otp = response['otp'];
         }
