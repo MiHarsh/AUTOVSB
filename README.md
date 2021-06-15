@@ -1,6 +1,6 @@
 # <p align ="center" >AUTOVSB</p>
 ## <p align ="center" >AUTOVSB - AUTO Vaccine Slot Booker </p>
-A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using cowin-public-v2 API for India.
+A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using browser automation.
 
 ## Table of Contents 📕
 
@@ -62,7 +62,7 @@ These are the prerequisites required to run this application:
 ## About the project 
 
 ### Description  :
-A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using cowin-public-v2 API for India.
+A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using browser automation.
 
 ### Features : 
 -   A secure script for automatic vaccine slot booking.
