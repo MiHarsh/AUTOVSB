@@ -33,7 +33,7 @@ async function start(){
     let mobile_number = creds['mobile_number'];
     let hash_number = creds['hash_number'];
     let zipcode= creds['zipcodes']   //list of pincodes
-    let preferred_slot = Number(creds['preferred_slot']);
+    var preferred_slot = Number(creds['preferred_slot']);
 
     let curr_date = new Date(); //current date
     let checkdate = [curr_date.getDate(), curr_date.getMonth()+1, curr_date.getFullYear()].join('-')//date in required format
@@ -101,7 +101,7 @@ async function start(){
 
     // ##########################################################################################
     /* For now, this is only concerned for booking of first dose, will implement further later*/
-    console.log("Waiting to schedule ... ");
+    console.log("Searching for appointments to schedule for Dose 1.. ");
     let sch = await testingPage.evaluate(() => {
 
         let elements = document.getElementsByClassName("m-lablename");
@@ -141,7 +141,7 @@ async function start(){
     }
 
     // ####################################################################################
-
+    console.log("Search Complete ... ");
     await testingPage.waitForTimeout(10000);
     
     console.log("Entering the PinCode: " + pincode);
@@ -204,10 +204,11 @@ async function start(){
     await testingPage.waitForTimeout(5000);
     console.log("Selecting Preferred Slot ....");
     // ###################### SELECT PREFERRED SLOT TIMING  #################################    
-    await testingPage.evaluate(()=>{
+    await testingPage.evaluate(({preferred_slot})=>{
         let slots = document.querySelectorAll("[class='time-slot accessibility-plugin-ac ng-star-inserted md button button-solid ion-activatable ion-focusable hydrated']");
+       
         slots[preferred_slot].click();
-    });
+    },{preferred_slot});
 
     // ####################################################################################
     console.log("Confirming the Booking ....");
@@ -229,6 +230,7 @@ async function start(){
 
     await testingPage.waitForTimeout(10000);
     await testingPage.close();
+    process.exit(0);
     }
 
 // ########################################################################################
