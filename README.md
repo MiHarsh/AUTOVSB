@@ -5,12 +5,39 @@ A script based on browser automation which continuously scraps COVID-19 vaccine 
 ## Table of Contents 📕
 
 - [About the Project](#about-the-project)
-  - [Description](#description)
+  - [Why AUTOVSB?](#why-autovsb)
   - [Features](#features)
   - [Built With](#built-with)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [How it Works?](#how-it-works)
+
+
+## About the project 
+
+### <p align="center">Why AUTOVSB over other scripts ? </p>
+There has been an overwhelming response to the automation of booking. Cowin has provided some APIs that could be used for several tasks, from scraping slot data to OTP verification, downloading certificates, and many more. [ [1](https://apisetu.gov.in/public/api/cowin/cowin-public-v2) ]
+
+But eventually, there has been an increase in the use of these public APIs, which resulted in server load, the site being slow, and other issues. More details can be found here. [ [2](https://www.indiatoday.in/technology/news/story/changes-in-cowin-app-govt-restricts-vaccine-slot-info-to-fight-bots-and-alert-services-1799827-2021-05-07) ]
+
+<p align="center"><img src="https://imgur.com/B0pXS6O.jpg" alt="india-today-news" width="512"/></p>
+
+Hence, there have been many restrictions applied to the public APIs. So using scripts that run on those APIs might get a lot of issues in the future. AUTOVSB, on the other hand, uses browser automation. It functions as if a regular user logs in, checks for slots, if available, books it. Hence, it is also more reliable ;)
+
+### Features : 
+-   A secure script for automatic vaccine slot booking.
+-   Browser automation, hence no load of restrictions on Public APIs.
+-   Vizualisable and easy-to-use.
+-   Auto alert on slots availability.
+-   Supports multiple pincodes, Increased chances of booking.
+-   Automatic appointment slip downloading. 
+
+### Build With : 
+- [Puppeteer](https://pptr.dev/) - used for browser automation.
+
+
+
 
 ## Getting Started ✅
 
@@ -59,20 +86,9 @@ These are the prerequisites required to run this application:
 ```sh
   npm test
 ```
-## About the project 
 
-### Description  :
-A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using browser automation.
+### How it works?
 
-### Features : 
--   A secure script for automatic vaccine slot booking.
--   Vizualisable and easy-to-use, browser automation.
--   Auto alert on slots availability.
--   Supports multiple pincodes, Increased chances of booking.
--   Automatic appointment slip downloading. 
-
-### Build With : 
-- [Puppeteer](https://pptr.dev/) - used for browser automation.
 
 ### Motivation:
 I am a Bachelor's student, due to having irregular schedules, we often face many troubles. Booking a vaccine slot now stands on the top ;) Many of my friends were facing the same problem, sometimes looking for slots also hindered the efficiency of doing other tasks. Occasionally, we also kept an eye on the telegram groups. Getting fed up with this, we thought of finding a solution.
