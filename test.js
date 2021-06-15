@@ -49,13 +49,14 @@ async function start(){
             await testingPage.waitForTimeout(40000);
         }
     }
-
+    // ###################################################
+    // Notify user about availability of vaccine 
     player.play('notifyme.wav', function(err){
         if (err) throw err
     });
     
     let pincode = String(getSlotPIN) ;
-    console.log(pincode); // if user wants to book himself...
+    console.log("Vaccine is available at pincode " + pincode); // if user wants to book himself...
     // ###################################################
 
     let newUrl = "https://selfregistration.cowin.gov.in/";
@@ -141,7 +142,7 @@ async function start(){
     // ###################### ENTER THE PIN CODE  #################################
     await testingPage.waitForSelector('input#mat-input-2'); // <-- wait until it exists
     await testingPage.focus("input#mat-input-2");
-    await testingPage.keyboard.type(pincode, {delay: 1000});
+    await testingPage.keyboard.type(pincode, {delay: 800});
     
     // ####################################################################################
 
