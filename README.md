@@ -88,6 +88,13 @@ These are the prerequisites required to run this application:
   npm test
 ```
 
+**Note** : If your network connectivity is good, you can reduce the time(in milliseconds) in the timeouts. The values given now, works fine for an average user. Please feel free to play with it according to your connection speed.
+
+```js
+await testingPage.waitForTimeout(<time in miliseconds>);
+```
+
+
 ### How it works?
 Once you run the script, it will check for slot availability on the user's ZIP code and, if available, return the **ZIP code** that has the **maximum** number of slots from the date entered. After that, it will **log in** with the user's mobile number, **auto-detect** the OTP from the user's phone, and will **schedule** the slot for the members looking for the **first dose** in the user's account, as per the user's **preferred time slot**, and **download** the appointment slip.
 
