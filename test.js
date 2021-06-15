@@ -12,12 +12,15 @@ async function boot(){
           headless: !creds["functionality_visibility"], 
           args: [
              `--no-sandbox`,
-             `--allow-running-insecure-content`
+             `--allow-running-insecure-content`,
+              `--start-maximized`
           ],
           pipe: true
         });
     console.log("Welcome @user :) , now sit back and go on resume your work \n");
-    testingPage = await browser.newPage(); };
+    testingPage = await browser.newPage();
+    await testingPage.setViewport({ width: 1366, height: 768});
+    };
 
 // #######################################################################
     
@@ -65,7 +68,7 @@ async function start(){
 
     // ################## SITE IS LOADED ######################
 
-    
+    console.log("Entering mobile Number ");
     // ###################### ENTER THE MOBILE NUMBER AND CLICK NEXT #################################
     await testingPage.waitForSelector('input#mat-input-0'); // <-- wait until it exists
     await testingPage.focus("input#mat-input-0");
@@ -78,9 +81,10 @@ async function start(){
     // ##########################################################################################
     
     await testingPage.waitForTimeout(5000);
-    
+    console.log("Waiting to auto detect OTP ");
     var otp = await retrieveOTP(mobile_number,hash_number);
-
+    
+    console.log("OTP detected, Entering the OTP ");
 
     // ###################### ENTER THE OTP VERIFICATION CODE AND CLICK NEXT #####################
 
@@ -92,12 +96,12 @@ async function start(){
     });
 
     // ##########################################################################################
-
+    console.log("OTP successfully Entered ");
     await testingPage.waitForTimeout(5000);
 
     // ##########################################################################################
     /* For now, this is only concerned for booking of first dose, will implement further later*/
-
+    console.log("Waiting to schedule ... ");
     let sch = await testingPage.evaluate(() => {
 
         let elements = document.getElementsByClassName("m-lablename");
@@ -132,20 +136,22 @@ async function start(){
     {
         console.log("Nothing to Schedule for Dose 1");
         await browser.close();
+        process.exit(1);
         
     }
 
     // ####################################################################################
 
     await testingPage.waitForTimeout(10000);
-
+    
+    console.log("Entering the PinCode: " + pincode);
     // ###################### ENTER THE PIN CODE  #################################
     await testingPage.waitForSelector('input#mat-input-2'); // <-- wait until it exists
     await testingPage.focus("input#mat-input-2");
     await testingPage.keyboard.type(pincode, {delay: 800});
     
     // ####################################################################################
-
+    console.log("Selecting a slot....");
     // ###################### SELECT FREE AND CATEGORY OPTIONS  #################################
     /* I have implemented in loop because, may be due to some network issues, if page is not loaded full,
     it should give another try */
@@ -185,7 +191,7 @@ async function start(){
     }
 
     // ####################################################################################
-
+    
     // ###################### CLICK ON THE AVAILABLE SLOT LIST  #################################
     /* Many slots may be available, but as we are monitoring from start, 
     we can safely go with just the very first slot instead of looping on and on. */
@@ -196,7 +202,7 @@ async function start(){
 
     // ####################################################################################
     await testingPage.waitForTimeout(5000);
-
+    console.log("Selecting Preferred Slot ....");
     // ###################### SELECT PREFERRED SLOT TIMING  #################################    
     await testingPage.evaluate(()=>{
         let slots = document.querySelectorAll("[class='time-slot accessibility-plugin-ac ng-star-inserted md button button-solid ion-activatable ion-focusable hydrated']");
@@ -204,16 +210,16 @@ async function start(){
     });
 
     // ####################################################################################
-
+    console.log("Confirming the Booking ....");
     // ###################### CONFIRM BOOKING  #################################  
     await testingPage.evaluate(()=>{
         let btn = document.querySelectorAll("[class='covid-button-desktop ion-text-end book-btn button-container__right']");
         btn[0].children[0].click() ; 
     });
-
+    console.log("Booking Confirmed, Congrats ....");
     // ####################################################################################
     await testingPage.waitForTimeout(6000);
-
+    console.log("Downloading the Appointment Slip ....");
     // ###################################### DOWNLOAD  #################################  
     await testingPage.evaluate(()=>{
         let btn = document.querySelector("[class='print-icon accessibility-plugin-ac']");
