@@ -5,13 +5,14 @@ A script based on browser automation which continuously scraps COVID-19 vaccine 
 ## Table of Contents 📕
 
 - [About the Project](#about-the-project)
-  - [Why AUTOVSB?](#why-autovsb)
-  - [Features](#features)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
+  - [Why AUTOVSB?](#why-autovsb-over-other-scripts--)
+  - [Features](#features-)
+  - [Built With](#built-with-)
+- [Getting Started](#getting-started-)
+  - [Prerequisites](#prerequisites-)
   - [Installation](#installation)
   - [How it Works?](#how-it-works)
+- [Motivation](#motivation)
 
 
 ## About the project 
@@ -33,7 +34,7 @@ Hence, there have been many restrictions applied to the public APIs. So using sc
 -   Supports multiple pincodes, Increased chances of booking.
 -   Automatic appointment slip downloading. 
 
-### Build With : 
+### Built With : 
 - [Puppeteer](https://pptr.dev/) - used for browser automation.
 
 
@@ -88,7 +89,9 @@ These are the prerequisites required to run this application:
 ```
 
 ### How it works?
+Once you run the script, it will check for slot availability on the user's ZIP code and, if available, return the **ZIP code** that has the **maximum** number of slots from the date entered. After that, it will **log in** with the user's mobile number, **auto-detect** the OTP from the user's phone, and will **schedule** the slot for the members looking for the **first dose** in the user's account, as per the user's **preferred time slot**, and **download** the appointment slip.
 
+**Note** - Users will have to add member manually before running the script.
 
 ### Motivation:
 I am a Bachelor's student, due to having irregular schedules, we often face many troubles. Booking a vaccine slot now stands on the top ;) Many of my friends were facing the same problem, sometimes looking for slots also hindered the efficiency of doing other tasks. Occasionally, we also kept an eye on the telegram groups. Getting fed up with this, we thought of finding a solution.
