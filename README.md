@@ -98,6 +98,13 @@ These are the prerequisites required to run this application:
 await testingPage.waitForTimeout(<time in miliseconds>);
 ```
 
+**Note** : Since we have not tested on a large scale, there might be a lot of issues encountered. Feel free to raise issues, even send PRs if you can handle them. The main aim is to benefit our whole community, so even a small step could help others.
+
+Also, we might be updating scripts based on the user's experience, and it would be great if you could keep a `watch` on this repo. Also, pull the latest commits before running the script. To git pull just write,
+```sh
+git pull
+```
+
 
 ### How it works?
 Once you run the script, it will check for slot availability on the user's ZIP code and, if available, return the **ZIP code** that has the **maximum** number of slots from the date entered. After that, it will **log in** with the user's mobile number, **auto-detect** the OTP from the user's phone, and will **schedule** the slot for the members looking for the **first dose** in the user's account, as per the user's **preferred time slot**, and **download** the appointment slip.
