@@ -90,7 +90,7 @@ async function start(){
 
     await testingPage.waitForSelector('input#mat-input-1'); // <-- wait until it exists
     await testingPage.focus("input#mat-input-1");
-    await testingPage.keyboard.type(otp, {delay: 1000});
+    await testingPage.keyboard.type(otp, {delay: 800});
     await testingPage.evaluate(()=>{
         document.querySelector("[class='covid-button-desktop ion-text-center']").children[0].click();
     });
@@ -142,7 +142,7 @@ async function start(){
 
     // ####################################################################################
     console.log("Search Complete ... ");
-    await testingPage.waitForTimeout(10000);
+    await testingPage.waitForTimeout(5000);
     
     console.log("Entering the PinCode: " + pincode);
     // ###################### ENTER THE PIN CODE  #################################
@@ -228,7 +228,7 @@ async function start(){
     });
     // ####################################################################################
 
-    await testingPage.waitForTimeout(10000);
+    await testingPage.waitForTimeout(5000);
     await testingPage.close();
     process.exit(0);
     }
