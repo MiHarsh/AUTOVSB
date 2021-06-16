@@ -55,6 +55,8 @@ These are the prerequisites required to run this application:
 - npm
 - android app - AUTOVSB
 
+**Note** - Issues regarding app? [Read this out](https://github.com/MiHarsh/AUTOVSB/wiki/AUTOVSB-APP)
+
 ### Installation
 
 1. ##### Clone the AUTOVSB repository form github 
