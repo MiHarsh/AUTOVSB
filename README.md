@@ -2,6 +2,10 @@
 ## <p align ="center" >AUTOVSB - AUTO Vaccine Slot Booker </p>
 A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using browser automation.
 
+
+[![Demo AUTOVSB](https://i.imgur.com/ooTyjKP.gif)](https://www.youtube.com/watch?v=_4PlaRtGYQ0)
+
+
 ## Table of Contents 📕
 
 - [About the Project](#about-the-project)
