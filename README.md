@@ -3,7 +3,9 @@
 A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using browser automation.
 
 
-[![Demo AUTOVSB](https://i.imgur.com/ooTyjKP.gif)](https://www.youtube.com/watch?v=_4PlaRtGYQ0)
+[![Demo AUTOVSB](https://imgur.com/IXuk45X.gif)](https://www.youtube.com/watch?v=Y8IFcMg9gts)
+
+[View Full video](https://www.youtube.com/watch?v=Y8IFcMg9gts)
 
 
 ## Table of Contents 📕
@@ -53,7 +55,7 @@ To get a local copy up and running, follow these simple steps.
 These are the prerequisites required to run this application:
 
 - npm
-- android app - AUTOVSB
+- android app - AUTOVSB (apk present in this repository)
 
 **Note** - Issues regarding app? [Read this out](https://github.com/MiHarsh/AUTOVSB/wiki/AUTOVSB-APP)
 
