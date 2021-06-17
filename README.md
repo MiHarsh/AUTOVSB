@@ -1,5 +1,5 @@
-# <p align ="center" >AUTOVSB</p>
-## <p align ="center" >AUTOVSB - AUTO Vaccine Slot Booker </p>
+# AUTOVSB
+## AUTOVSB - AUTO Vaccine Slot Booker
 A script based on browser automation which continuously scraps COVID-19 vaccine slot data, alerts you and books it for you when it's available using browser automation.
 
 
@@ -23,7 +23,7 @@ A script based on browser automation which continuously scraps COVID-19 vaccine 
 
 ## About the project 
 
-### <p align="center">Why AUTOVSB over other scripts ? </p>
+### Why AUTOVSB over other scripts ?
 There has been an overwhelming response to the automation of booking. Cowin has provided some APIs that could be used for several tasks, from scraping slot data to OTP verification, downloading certificates, and many more. [ [1](https://apisetu.gov.in/public/api/cowin/cowin-public-v2) ]
 
 But eventually, there has been an increase in the use of these public APIs, which resulted in server load, the site being slow, and other issues. More details can be found here. [ [2](https://www.indiatoday.in/technology/news/story/changes-in-cowin-app-govt-restricts-vaccine-slot-info-to-fight-bots-and-alert-services-1799827-2021-05-07) ]
