@@ -3,6 +3,7 @@ description: An Automated script to alert and book vaccine slots in India.
 theme: jekyll-theme-cayman
 github:
   zip_url: https://github.com/MiHarsh/AUTOVSB/archive/refs/heads/main.zip
+  tar_url: https://github.com/MiHarsh/AUTOVSB/tarball/main
   clone_url: https://github.com/MiHarsh/AUTOVSB.git
   owner_url: https://github.com/MiHarsh
 show_downloads: true
